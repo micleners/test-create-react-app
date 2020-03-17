@@ -1,29 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import logo from '../logo.svg';
 import axios from 'axios';
 import './App.css';
 import apiParams from '../api-params';
+import { SearchEdamam } from './SearchEdamam';
+import { SearchGithub } from './SearchGithub';
+import { Flex, Box } from 'rebass';
 
 let result;
 
 const App = () => {
-  const querySearch = async (query = '', health = null, diet = null) => {
-    return await axios.get(apiParams.searchUrl, {
-      params: {
-        q: query,
-        diet: diet,
-        health: health,
-        app_id: apiParams.eadmamId,
-        app_key: apiParams.edamamKey,
-        from: 0,
-        to: 9
-      }
-    });
-  };
-
+  const [showEdamam, setShowEdamam] = useState(false);
   const [data, setData] = useState({ hits: [] });
 
-  const gitHubSearch = async (name = 'micleners') => {
+  const gitHubSearch = (name = 'micleners') => {
     axios.get(apiParams.githubUrl + name).then(response => {
       console.log(response.data);
       console.log(response.status);
@@ -49,7 +38,23 @@ const App = () => {
   }, []);
 
   console.log(data);
-  return <div className="App">Nom Time {result}</div>;
+  return (
+    <Flex className="App" flexDirection="column" alignItems="center">
+      <Box
+        mb={3}
+        as="button"
+        onClick={() => setShowEdamam(showEdamam => !showEdamam)}
+      >
+        Show {showEdamam ? 'Github Search' : 'Recipe Search'}
+      </Box>
+      <Box hidden={!showEdamam}>
+        <SearchEdamam />
+      </Box>
+      <Box hidden={showEdamam}>
+        <SearchGithub />
+      </Box>
+    </Flex>
+  );
 };
 
 export default App;
