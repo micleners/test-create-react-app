@@ -12,61 +12,62 @@ const App = () => {
 
   const addCard = (list, listMethod) => {
     const result = window.prompt('Enter new card', 'Enter new card');
-    list.push(result);
-    const newList = list.slice();
-    listMethod(newList);
+    if (result) {
+      list.push(result);
+      const newList = list.slice();
+      listMethod(newList);
+    }
   };
 
   const leftClick = (item, list, listNumber) => {
     if (listNumber === '2') {
-      const newList2 = list2.filter(e => e !== item)
-      setList2(newList2)
+      const newList2 = list2.filter(e => e !== item);
+      setList2(newList2);
 
-      list1.push(item)
+      list1.push(item);
       const newList1 = list1.slice();
       setList1(newList1);
     }
     if (listNumber === '3') {
-      const newList3 = list3.filter(e => e !== item)
-      setList3(newList3)
+      const newList3 = list3.filter(e => e !== item);
+      setList3(newList3);
 
-      list2.push(item)
+      list2.push(item);
       const newList2 = list2.slice();
       setList2(newList2);
     }
     if (listNumber === '4') {
-      const newList4 = list4.filter(e => e !== item)
-      setList4(newList4)
+      const newList4 = list4.filter(e => e !== item);
+      setList4(newList4);
 
-      list3.push(item)
+      list3.push(item);
       const newList3 = list3.slice();
       setList3(newList3);
     }
   };
 
-
   const rightClick = (item, list, listNumber) => {
     if (listNumber === '1') {
-      const newList1 = list1.filter(e => e !== item)
-      setList1(newList1)
+      const newList1 = list1.filter(e => e !== item);
+      setList1(newList1);
 
-      list2.push(item)
+      list2.push(item);
       const newList2 = list2.slice();
       setList2(newList2);
     }
     if (listNumber === '2') {
-      const newList2 = list2.filter(e => e !== item)
-      setList2(newList2)
+      const newList2 = list2.filter(e => e !== item);
+      setList2(newList2);
 
-      list3.push(item)
+      list3.push(item);
       const newList3 = list3.slice();
       setList3(newList3);
     }
     if (listNumber === '3') {
-      const newList3 = list3.filter(e => e !== item)
-      setList3(newList3)
+      const newList3 = list3.filter(e => e !== item);
+      setList3(newList3);
 
-      list4.push(item)
+      list4.push(item);
       const newList4 = list4.slice();
       setList4(newList4);
     }
@@ -134,7 +135,7 @@ const App = () => {
       <Column
         mx="25px"
         headerBg="#8e6e95"
-        name="Apples"
+        name="Number Items"
         list={list1}
         listNumber="1"
         listMethod={setList1}
@@ -142,7 +143,7 @@ const App = () => {
       <Column
         mr="25px"
         headerBg="#39A59C"
-        name="Apples"
+        name="Letter Items"
         list={list2}
         listNumber="2"
         listMethod={setList2}
@@ -150,7 +151,7 @@ const App = () => {
       <Column
         mr="25px"
         headerBg="#344759"
-        name="Apples"
+        name="Fruit"
         list={list3}
         listNumber="3"
         listMethod={setList3}
@@ -158,7 +159,7 @@ const App = () => {
       <Column
         mr="25px"
         headerBg="#E8741E"
-        name="Apples"
+        name="Communication"
         list={list4}
         listNumber="4"
         listMethod={setList4}
