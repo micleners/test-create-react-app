@@ -1,75 +1,70 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import './App.css';
-import apiParams from '../api-params';
 import { Flex, Box } from 'rebass';
 
 const App = () => {
-  const [list1, setList1] = useState(['Item 1', 'Item 2']);
-  const [list2, setList2] = useState(['Item A', 'Item B']);
-  const [list3, setList3] = useState(['Orange', 'Apple']);
-  const [list4, setList4] = useState(['Call', 'Slack']);
+  const [lists, setLists] = useState([
+    ['Item 1', 'Item 2'],
+    ['Item A', 'Item B'],
+    ['Orange', 'Apple'],
+    ['Call', 'Slack']
+  ]);
 
-  const addCard = (list, listMethod) => {
+  const [columnMetaData, setColumnMetaData] = useState([
+    {
+      headerBg: '#8e6e95',
+      name: 'Number Items'
+    },
+    {
+      headerBg: '#39A59C',
+      name: 'Letter Items'
+    },
+    {
+      headerBg: '#344759',
+      name: 'Fruit'
+    },
+    {
+      headerBg: '#E8741E',
+      name: 'Communication'
+    }
+  ]);
+
+  const addCard = index => {
     const result = window.prompt('Enter new card', 'Enter new card');
     if (result) {
-      list.push(result);
-      const newList = list.slice();
-      listMethod(newList);
+      lists[index].push(result);
+      setLists(lists.slice());
     }
   };
 
-  const leftClick = (item, list, listNumber) => {
-    if (listNumber === '2') {
-      const newList2 = list2.filter(e => e !== item);
-      setList2(newList2);
-
-      list1.push(item);
-      const newList1 = list1.slice();
-      setList1(newList1);
-    }
-    if (listNumber === '3') {
-      const newList3 = list3.filter(e => e !== item);
-      setList3(newList3);
-
-      list2.push(item);
-      const newList2 = list2.slice();
-      setList2(newList2);
-    }
-    if (listNumber === '4') {
-      const newList4 = list4.filter(e => e !== item);
-      setList4(newList4);
-
-      list3.push(item);
-      const newList3 = list3.slice();
-      setList3(newList3);
+  const addList = index => {
+    const name = window.prompt(
+      'Enter new column name',
+      'Enter new column name'
+    );
+    const headerBg = window.prompt('Enter color hex', '#000000');
+    const metaData = { name, headerBg };
+    if (headerBg && metaData) {
+      columnMetaData.push(metaData);
+      setColumnMetaData(columnMetaData.slice());
+      lists.push([]);
+      setLists(lists.slice());
     }
   };
 
-  const rightClick = (item, list, listNumber) => {
-    if (listNumber === '1') {
-      const newList1 = list1.filter(e => e !== item);
-      setList1(newList1);
-
-      list2.push(item);
-      const newList2 = list2.slice();
-      setList2(newList2);
+  const leftClick = (item, listNumber) => {
+    if (listNumber > 0) {
+      lists[listNumber - 1].push(item);
+      lists[listNumber] = lists[listNumber].filter(e => e !== item);
+      setLists(lists.slice());
     }
-    if (listNumber === '2') {
-      const newList2 = list2.filter(e => e !== item);
-      setList2(newList2);
+  };
 
-      list3.push(item);
-      const newList3 = list3.slice();
-      setList3(newList3);
-    }
-    if (listNumber === '3') {
-      const newList3 = list3.filter(e => e !== item);
-      setList3(newList3);
-
-      list4.push(item);
-      const newList4 = list4.slice();
-      setList4(newList4);
+  const rightClick = (item, listNumber) => {
+    if (listNumber < lists.length - 1) {
+      lists[listNumber + 1].push(item);
+      lists[listNumber] = lists[listNumber].filter(e => e !== item);
+      setLists(lists.slice());
     }
   };
 
@@ -77,7 +72,7 @@ const App = () => {
     return (
       <Flex flexGrow="1" flexDirection="column" {...props}>
         <Flex
-          height="30px"
+          height="80px"
           verticalAlign="middle"
           color="white"
           bg={props.headerBg}
@@ -86,35 +81,36 @@ const App = () => {
         >
           <Box>{props.name}</Box>
         </Flex>
-        {props.list &&
-          props.list.map((item, index) => (
+        {lists[props.listNumber] &&
+          lists[props.listNumber].map(item => (
             <Flex
               key={item}
               mt={2}
+              height="50px"
               width="100%"
               bg="white"
               justifyContent="space-between"
             >
-              <Box>
+              <Box my="auto" ml={2}>
                 <Box
-                  hidden={props.listNumber === '1'}
-                  onClick={() => leftClick(item, props.list, props.listNumber)}
+                  hidden={props.listNumber === 0}
+                  onClick={() => leftClick(item, props.listNumber)}
                 >
                   &lt;
                 </Box>
               </Box>
-              <Box>{item}</Box>
-              <Box>
+              <Box margin="auto">{item}</Box>
+              <Box my="auto" mr={2}>
                 <Box
-                  hidden={props.listNumber === '4'}
-                  onClick={() => rightClick(item, props.list, props.listNumber)}
+                  hidden={props.listNumber === 3}
+                  onClick={() => rightClick(item, props.listNumber)}
                 >
                   &gt;
                 </Box>
               </Box>
             </Flex>
           ))}
-        <Box mt="4" onClick={() => addCard(props.list, props.listMethod)}>
+        <Box mt={4} onClick={() => addCard(props.listNumber)}>
           + Add a card
         </Box>
       </Flex>
@@ -122,49 +118,44 @@ const App = () => {
   };
 
   return (
-    <Flex
-      bg="#eceeee"
-      height="100%"
-      className="App"
-      flexDirection="row"
-      alignItems="center"
-      justifyContent="stretch"
-      alignItems="stretch"
-      py="30px"
-    >
-      <Column
-        mx="25px"
-        headerBg="#8e6e95"
-        name="Number Items"
-        list={list1}
-        listNumber="1"
-        listMethod={setList1}
-      />
-      <Column
-        mr="25px"
-        headerBg="#39A59C"
-        name="Letter Items"
-        list={list2}
-        listNumber="2"
-        listMethod={setList2}
-      />
-      <Column
-        mr="25px"
-        headerBg="#344759"
-        name="Fruit"
-        list={list3}
-        listNumber="3"
-        listMethod={setList3}
-      />
-      <Column
-        mr="25px"
-        headerBg="#E8741E"
-        name="Communication"
-        list={list4}
-        listNumber="4"
-        listMethod={setList4}
-      />
-    </Flex>
+    <Box bg="#eceeee" height="100%" pb="100px">
+      <Flex
+        height="100%"
+        className="App"
+        flexDirection="row"
+        justifyContent="stretch"
+        alignItems="stretch"
+        py="30px"
+      >
+        {lists.length > 0 &&
+          lists.map((list, index) => {
+            const metaData = columnMetaData[index];
+            return (
+              <Column
+                ml={index === 0 ? '25px' : ''}
+                mr="25px"
+                headerBg={metaData.headerBg}
+                name={metaData.name}
+                list={list}
+                listNumber={index}
+              />
+            );
+          })}
+      </Flex>
+      <Box
+        bg="#BABABA"
+        onClick={() => addList()}
+        mx="auto"
+        my="100px"
+        width="200px"
+        padding="20px"
+        textAlign="center"
+        verticalAlign="middle"
+        color="white"
+      >
+        Add Column
+      </Box>
+    </Box>
   );
 };
 
